@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import GameRules from './GameRules';
+import sounds from './soundConfig';
 
 const BOARD_SIZE = 8;
 const COLORS = ['red', 'blue', 'green', 'yellow', 'purple'];
@@ -120,6 +121,7 @@ const App = () => {
     if (newMatches.length > 0) {
       setMatches(newMatches);
       setDisappearingSquares(newMatches);
+      sounds.disappear.play(); // Play sound when squares disappear
       setTimeout(() => {
         removeMatches(newMatches);
         setDisappearingSquares([]);
