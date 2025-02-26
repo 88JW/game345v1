@@ -15,6 +15,7 @@ const App = () => {
     initializeBoard();
   }, []);
 
+  // Inicjalizuje planszę z losowymi kolorami
   const initializeBoard = () => {
     const newBoard = Array.from({ length: BOARD_SIZE }, () =>
       Array.from({ length: BOARD_SIZE }, () => COLORS[Math.floor(Math.random() * COLORS.length)])
@@ -22,15 +23,22 @@ const App = () => {
     setBoard(newBoard);
   };
 
+  // Obsługuje kliknięcie na kwadrat
   const handleSquareClick = (row, col) => {
     if (selectedSquare) {
       const [selectedRow, selectedCol] = selectedSquare;
       if (Math.abs(selectedRow - row) + Math.abs(selectedCol - col) === 1) {
         const newBoard = [...board];
         [newBoard[selectedRow][selectedCol], newBoard[row][col]] = [newBoard[row][col], newBoard[selectedRow][selectedCol]];
-        setBoard(newBoard);
-        setSelectedSquare(null);
-        resolveMatches(newBoard);
+        if (hasMatches(newBoard)) {
+          setBoard(newBoard);
+          setSelectedSquare(null);
+          resolveMatches(newBoard);
+        } else {
+          // Cofnij zamianę, jeśli nie znaleziono dopasowań
+          [newBoard[selectedRow][selectedCol], newBoard[row][col]] = [newBoard[row][col], newBoard[selectedRow][selectedCol]];
+          setSelectedSquare(null);
+        }
       } else {
         setSelectedSquare([row, col]);
       }
@@ -39,6 +47,23 @@ const App = () => {
     }
   };
 
+  // Sprawdza, czy na planszy są dopasowania
+  const hasMatches = (board) => {
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        const color = board[row][col];
+        if (col < BOARD_SIZE - 2 && board[row][col + 1] === color && board[row][col + 2] === color) {
+          return true;
+        }
+        if (row < BOARD_SIZE - 2 && board[row + 1][col] === color && board[row + 2][col] === color) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  // Znajduje i oznacza dopasowania na planszy
   const resolveMatches = (board) => {
     const newMatches = [];
     const matchMap = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false));
@@ -73,6 +98,7 @@ const App = () => {
     }
   };
 
+  // Usuwa dopasowania z planszy
   const removeMatches = (matches) => {
     const newBoard = [...board];
     let points = 0;
@@ -86,6 +112,7 @@ const App = () => {
     dropSquares(newBoard);
   };
 
+  // Przesuwa kwadraty w dół, aby wypełnić puste miejsca
   const dropSquares = (board) => {
     const newBoard = [...board];
     for (let col = 0; col < BOARD_SIZE; col++) {
@@ -105,6 +132,7 @@ const App = () => {
     generateNewSquares(newBoard);
   };
 
+  // Generuje nowe kwadraty w pustych miejscach
   const generateNewSquares = (board) => {
     const newBoard = [...board];
     for (let row = 0; row < BOARD_SIZE; row++) {
@@ -118,6 +146,7 @@ const App = () => {
     resolveMatches(newBoard);
   };
 
+  // Sprawdza, czy gra się skończyła
   const checkGameOver = () => {
     // Implement logic to check if there are no more valid moves
     // If no valid moves, setGameOver(true);
