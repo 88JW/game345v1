@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import GameRules from './GameRules';
 
 const BOARD_SIZE = 8;
 const COLORS = ['red', 'blue', 'green', 'yellow', 'purple'];
@@ -11,6 +12,7 @@ const App = () => {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [invalidMove, setInvalidMove] = useState(false);
+  const [showRules, setShowRules] = useState(false);
 
   useEffect(() => {
     initializeBoard();
@@ -182,6 +184,15 @@ const App = () => {
           </div>
         ))}
       </div>
+      <button onClick={() => setShowRules(true)}>Show Rules</button>
+      {showRules && (
+        <div className="rules-popup">
+          <div className="rules-content">
+            <GameRules />
+            <button onClick={() => setShowRules(false)}>Close</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
