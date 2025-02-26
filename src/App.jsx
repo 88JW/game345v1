@@ -137,7 +137,7 @@ const App = () => {
     });
     setBoard(newBoard);
     setMatches([]);
-    setScore(score + points);
+    setScore(prevScore => prevScore + points);
     setAnimatingSquares(matches);
     setTimeout(() => {
       dropSquares(newBoard);
@@ -188,8 +188,8 @@ const App = () => {
     setIsAnimating(true);
     setTimeout(() => {
       setAppearingSquares([]);
-      setIsAnimating(false);
       resolveMatches(newBoard); // To zapewni, że nowe dopasowania zostaną rozwiązane i punkty zostaną dodane
+      setIsAnimating(false);
     }, 500); // 500ms opóźnienie
   };
 

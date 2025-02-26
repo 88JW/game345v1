@@ -101,23 +101,28 @@
 }
 
 .square.red {
-  background-color: red;
+  background-image: url('./assets/1.png');
+  background-size: cover;
 }
 
 .square.blue {
-  background-color: blue;
+  background-image: url('./assets/2.png');
+  background-size: cover;
 }
 
 .square.green {
-  background-color: green;
+  background-image: url('./assets/3.png');
+  background-size: cover;
 }
 
 .square.yellow {
-  background-color: yellow;
+  background-image: url('./assets/4.png');
+  background-size: cover;
 }
 
 .square.purple {
-  background-color: purple;
+  background-image: url('./assets/5.png');
+  background-size: cover;
 }
 
 .score {
