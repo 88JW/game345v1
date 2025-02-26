@@ -8,7 +8,6 @@ const App = () => {
   const [board, setBoard] = useState([]);
   const [selectedSquare, setSelectedSquare] = useState(null);
   const [matches, setMatches] = useState([]);
-  const [matchTimer, setMatchTimer] = useState(null);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
 
@@ -31,7 +30,7 @@ const App = () => {
         [newBoard[selectedRow][selectedCol], newBoard[row][col]] = [newBoard[row][col], newBoard[selectedRow][selectedCol]];
         setBoard(newBoard);
         setSelectedSquare(null);
-        resolveMatches();
+        resolveMatches(newBoard);
       } else {
         setSelectedSquare([row, col]);
       }
@@ -40,33 +39,41 @@ const App = () => {
     }
   };
 
-  const resolveMatches = () => {
+  const resolveMatches = (board) => {
     const newMatches = [];
+    const matchMap = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false));
+
     for (let row = 0; row < BOARD_SIZE; row++) {
       for (let col = 0; col < BOARD_SIZE; col++) {
         const color = board[row][col];
         if (col < BOARD_SIZE - 2 && board[row][col + 1] === color && board[row][col + 2] === color) {
-          newMatches.push({ row, col });
-          newMatches.push({ row, col: col + 1 });
-          newMatches.push({ row, col: col + 2 });
+          matchMap[row][col] = true;
+          matchMap[row][col + 1] = true;
+          matchMap[row][col + 2] = true;
         }
         if (row < BOARD_SIZE - 2 && board[row + 1][col] === color && board[row + 2][col] === color) {
-          newMatches.push({ row, col });
-          newMatches.push({ row: row + 1, col });
-          newMatches.push({ row: row + 2, col });
+          matchMap[row][col] = true;
+          matchMap[row + 1][col] = true;
+          matchMap[row + 2][col] = true;
         }
       }
     }
+
+    for (let row = 0; row < BOARD_SIZE; row++) {
+      for (let col = 0; col < BOARD_SIZE; col++) {
+        if (matchMap[row][col]) {
+          newMatches.push({ row, col });
+        }
+      }
+    }
+
     if (newMatches.length > 0) {
       setMatches(newMatches);
-      if (matchTimer) clearTimeout(matchTimer);
-      setMatchTimer(setTimeout(() => {
-        removeMatches();
-      }, 1000));
+      removeMatches(newMatches);
     }
   };
 
-  const removeMatches = () => {
+  const removeMatches = (matches) => {
     const newBoard = [...board];
     let points = 0;
     matches.forEach(({ row, col }) => {
@@ -76,10 +83,10 @@ const App = () => {
     setBoard(newBoard);
     setMatches([]);
     setScore(score + points);
-    dropSquares();
+    dropSquares(newBoard);
   };
 
-  const dropSquares = () => {
+  const dropSquares = (board) => {
     const newBoard = [...board];
     for (let col = 0; col < BOARD_SIZE; col++) {
       for (let row = BOARD_SIZE - 1; row >= 0; row--) {
@@ -95,10 +102,10 @@ const App = () => {
       }
     }
     setBoard(newBoard);
-    generateNewSquares();
+    generateNewSquares(newBoard);
   };
 
-  const generateNewSquares = () => {
+  const generateNewSquares = (board) => {
     const newBoard = [...board];
     for (let row = 0; row < BOARD_SIZE; row++) {
       for (let col = 0; col < BOARD_SIZE; col++) {
@@ -108,7 +115,7 @@ const App = () => {
       }
     }
     setBoard(newBoard);
-    resolveMatches();
+    resolveMatches(newBoard);
   };
 
   const checkGameOver = () => {
