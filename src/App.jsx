@@ -13,6 +13,8 @@ const App = () => {
   const [gameOver, setGameOver] = useState(false);
   const [invalidMove, setInvalidMove] = useState(false);
   const [showRules, setShowRules] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [animatingSquares, setAnimatingSquares] = useState([]);
 
   useEffect(() => {
     initializeBoard();
@@ -116,7 +118,11 @@ const App = () => {
     setBoard(newBoard);
     setMatches([]);
     setScore(score + points);
-    dropSquares(newBoard);
+    setAnimatingSquares(matches);
+    setTimeout(() => {
+      dropSquares(newBoard);
+      setAnimatingSquares([]);
+    }, 500); // 500ms delay
   };
 
   // Przesuwa kwadraty w dół, aby wypełnić puste miejsca
@@ -164,7 +170,7 @@ const App = () => {
   }, [board]);
 
   return (
-    <div className="App">
+    <div className={`App ${isAnimating ? 'animating' : ''}`}>
       <h1>Game 3-4-5</h1>
       <div className="score">Score: {score}</div>
       {gameOver && <div className="game-over">Game Over!</div>}
@@ -173,10 +179,11 @@ const App = () => {
           <div key={rowIndex} className="row">
             {row.map((color, colIndex) => {
               const isSelected = selectedSquare && selectedSquare[0] === rowIndex && selectedSquare[1] === colIndex;
+              const isAnimating = animatingSquares.some(square => square.row === rowIndex && square.col === colIndex);
               return (
                 <div
                   key={colIndex}
-                  className={`square ${color} ${isSelected && invalidMove ? 'cannot-move' : ''}`}
+                  className={`square ${color} ${isSelected && invalidMove ? 'cannot-move' : ''} ${isAnimating ? 'animating' : ''}`}
                   onClick={() => handleSquareClick(rowIndex, colIndex)}
                 />
               );
