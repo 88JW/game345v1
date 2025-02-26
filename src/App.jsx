@@ -165,7 +165,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>Match-3 Game</h1>
+      <h1>Game 3-4-5</h1>
       <div className="score">Score: {score}</div>
       {gameOver && <div className="game-over">Game Over!</div>}
       <div className="board">
@@ -184,7 +184,7 @@ const App = () => {
           </div>
         ))}
       </div>
-      <button onClick={() => setShowRules(true)}>Show Rules</button>
+      <button className="show-rules-button" onClick={() => setShowRules(true)}>Show Rules</button>
       {showRules && (
         <div className="rules-popup">
           <div className="rules-content">

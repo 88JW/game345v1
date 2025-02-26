@@ -1,7 +1,6 @@
 #root {
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: 0 auto; 
   text-align: center;
 }
 
@@ -11,14 +10,17 @@
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #282c34;
+  overflow: hidden;
 }
 
 .board {
   display: grid;
-  grid-template-rows: repeat(8, 50px);
-  grid-template-columns: repeat(8, 50px);
+  grid-template-rows: repeat(8, 12vw);
+  grid-template-columns: repeat(8, 12vw);
   gap: 2px;
+  width: 100vw;
+  height: 100vw;
+  box-sizing: border-box;
 }
 
 .row {
@@ -26,8 +28,8 @@
 }
 
 .square {
-  width: 50px;
-  height: 50px;
+  width: 11.5vw;
+  height: 11.5vw;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -57,7 +59,7 @@
 .score {
   font-size: 1.5rem;
   color: white;
-  margin-bottom: 1rem;
+  margin-bottom: 5rem;
 }
 
 .game-over {
@@ -95,5 +97,28 @@
 }
 
 .rules-content button {
+  margin-top: 10rem;
+}
+
+.rules-content button {
   margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.show-rules-button {
+  margin-top: 5rem;
+}
+
+@media (min-width: 1280px) {
+  .board {
+    grid-template-rows: repeat(8, 50px);
+    grid-template-columns: repeat(8, 50px);
+    width: auto;
+    height: auto;
+  }
+
+  .square {
+    width: 50px;
+    height: 50px;
+  }
 }
