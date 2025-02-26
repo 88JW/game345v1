@@ -10,6 +10,7 @@ const App = () => {
   const [matches, setMatches] = useState([]);
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
+  const [invalidMove, setInvalidMove] = useState(false);
 
   useEffect(() => {
     initializeBoard();
@@ -33,17 +34,21 @@ const App = () => {
         if (hasMatches(newBoard)) {
           setBoard(newBoard);
           setSelectedSquare(null);
+          setInvalidMove(false);
           resolveMatches(newBoard);
         } else {
           // Cofnij zamianę, jeśli nie znaleziono dopasowań
           [newBoard[selectedRow][selectedCol], newBoard[row][col]] = [newBoard[row][col], newBoard[selectedRow][selectedCol]];
           setSelectedSquare(null);
+          setInvalidMove(true);
         }
       } else {
         setSelectedSquare([row, col]);
+        setInvalidMove(false);
       }
     } else {
       setSelectedSquare([row, col]);
+      setInvalidMove(false);
     }
   };
 
@@ -164,13 +169,16 @@ const App = () => {
       <div className="board">
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="row">
-            {row.map((color, colIndex) => (
-              <div
-                key={colIndex}
-                className={`square ${color}`}
-                onClick={() => handleSquareClick(rowIndex, colIndex)}
-              />
-            ))}
+            {row.map((color, colIndex) => {
+              const isSelected = selectedSquare && selectedSquare[0] === rowIndex && selectedSquare[1] === colIndex;
+              return (
+                <div
+                  key={colIndex}
+                  className={`square ${color} ${isSelected && invalidMove ? 'cannot-move' : ''}`}
+                  onClick={() => handleSquareClick(rowIndex, colIndex)}
+                />
+              );
+            })}
           </div>
         ))}
       </div>

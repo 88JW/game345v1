@@ -65,3 +65,7 @@
   color: red;
   margin-top: 1rem;
 }
+
+.cannot-move {
+  opacity: 0.5;
+}
