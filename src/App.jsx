@@ -15,6 +15,10 @@ const App = () => {
   const [showRules, setShowRules] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [animatingSquares, setAnimatingSquares] = useState([]);
+  const [fallingSquares, setFallingSquares] = useState([]);
+  const [disappearingSquares, setDisappearingSquares] = useState([]);
+  const [appearingSquares, setAppearingSquares] = useState([]);
+  const [swappingSquares, setSwappingSquares] = useState([]);
 
   useEffect(() => {
     initializeBoard();
@@ -30,22 +34,34 @@ const App = () => {
 
   // Obsługuje kliknięcie na kwadrat
   const handleSquareClick = (row, col) => {
+    if (isAnimating) return; // Zablokuj przesuwanie podczas animacji
     if (selectedSquare) {
       const [selectedRow, selectedCol] = selectedSquare;
       if (Math.abs(selectedRow - row) + Math.abs(selectedCol - col) === 1) {
         const newBoard = [...board];
         [newBoard[selectedRow][selectedCol], newBoard[row][col]] = [newBoard[row][col], newBoard[selectedRow][selectedCol]];
-        if (hasMatches(newBoard)) {
-          setBoard(newBoard);
-          setSelectedSquare(null);
-          setInvalidMove(false);
-          resolveMatches(newBoard);
-        } else {
-          // Cofnij zamianę, jeśli nie znaleziono dopasowań
-          [newBoard[selectedRow][selectedCol], newBoard[row][col]] = [newBoard[row][col], newBoard[selectedRow][selectedCol]];
-          setSelectedSquare(null);
-          setInvalidMove(true);
-        }
+        const swapDirection = {
+          x: col - selectedCol,
+          y: row - selectedRow
+        };
+        setSwappingSquares([{ row: selectedRow, col: selectedCol, ...swapDirection }, { row, col, ...swapDirection }]);
+        setIsAnimating(true);
+        setTimeout(() => {
+          if (hasMatches(newBoard)) {
+            setBoard(newBoard);
+            setSelectedSquare(null);
+            setInvalidMove(false);
+            resolveMatches(newBoard);
+          } else {
+            // Cofnij zamianę, jeśli nie znaleziono dopasowań
+            [newBoard[selectedRow][selectedCol], newBoard[row][col]] = [newBoard[row][col], newBoard[selectedRow][selectedCol]];
+            setBoard(newBoard);
+            setSelectedSquare(null);
+            setInvalidMove(true);
+          }
+          setSwappingSquares([]);
+          setIsAnimating(false);
+        }, 300); // 300ms opóźnienie dla animacji zamiany
       } else {
         setSelectedSquare([row, col]);
         setInvalidMove(false);
@@ -103,7 +119,11 @@ const App = () => {
 
     if (newMatches.length > 0) {
       setMatches(newMatches);
-      removeMatches(newMatches);
+      setDisappearingSquares(newMatches);
+      setTimeout(() => {
+        removeMatches(newMatches);
+        setDisappearingSquares([]);
+      }, 500); // 500ms opóźnienie
     }
   };
 
@@ -122,12 +142,13 @@ const App = () => {
     setTimeout(() => {
       dropSquares(newBoard);
       setAnimatingSquares([]);
-    }, 500); // 500ms delay
+    }, 500); // 500ms opóźnienie
   };
 
   // Przesuwa kwadraty w dół, aby wypełnić puste miejsca
   const dropSquares = (board) => {
     const newBoard = [...board];
+    const newFallingSquares = [];
     for (let col = 0; col < BOARD_SIZE; col++) {
       for (let row = BOARD_SIZE - 1; row >= 0; row--) {
         if (newBoard[row][col] === null) {
@@ -135,6 +156,7 @@ const App = () => {
             if (newBoard[rowAbove][col] !== null) {
               newBoard[row][col] = newBoard[rowAbove][col];
               newBoard[rowAbove][col] = null;
+              newFallingSquares.push({ row, col });
               break;
             }
           }
@@ -142,27 +164,39 @@ const App = () => {
       }
     }
     setBoard(newBoard);
-    generateNewSquares(newBoard);
+    setFallingSquares(newFallingSquares);
+    setTimeout(() => {
+      setFallingSquares([]);
+      generateNewSquares(newBoard);
+    }, 500); // 500ms opóźnienie
   };
 
   // Generuje nowe kwadraty w pustych miejscach
   const generateNewSquares = (board) => {
     const newBoard = [...board];
+    const newAppearingSquares = [];
     for (let row = 0; row < BOARD_SIZE; row++) {
       for (let col = 0; col < BOARD_SIZE; col++) {
         if (newBoard[row][col] === null) {
           newBoard[row][col] = COLORS[Math.floor(Math.random() * COLORS.length)];
+          newAppearingSquares.push({ row, col });
         }
       }
     }
     setBoard(newBoard);
-    resolveMatches(newBoard);
+    setAppearingSquares(newAppearingSquares);
+    setIsAnimating(true);
+    setTimeout(() => {
+      setAppearingSquares([]);
+      setIsAnimating(false);
+      resolveMatches(newBoard); // To zapewni, że nowe dopasowania zostaną rozwiązane i punkty zostaną dodane
+    }, 500); // 500ms opóźnienie
   };
 
   // Sprawdza, czy gra się skończyła
   const checkGameOver = () => {
-    // Implement logic to check if there are no more valid moves
-    // If no valid moves, setGameOver(true);
+    // Implementuj logikę sprawdzania, czy nie ma już żadnych prawidłowych ruchów
+    // Jeśli brak prawidłowych ruchów, setGameOver(true);
   };
 
   useEffect(() => {
@@ -172,18 +206,24 @@ const App = () => {
   return (
     <div className={`App ${isAnimating ? 'animating' : ''}`}>
       <h1>Game 3-4-5</h1>
-      <div className="score">Score: {score}</div>
-      {gameOver && <div className="game-over">Game Over!</div>}
+      <div className="score">Wynik: {score}</div>
+      {gameOver && <div className="game-over">Koniec gry!</div>}
       <div className="board">
         {board.map((row, rowIndex) => (
           <div key={rowIndex} className="row">
             {row.map((color, colIndex) => {
               const isSelected = selectedSquare && selectedSquare[0] === rowIndex && selectedSquare[1] === colIndex;
               const isAnimating = animatingSquares.some(square => square.row === rowIndex && square.col === colIndex);
+              const isFalling = fallingSquares.some(square => square.row === rowIndex && square.col === colIndex);
+              const isDisappearing = disappearingSquares.some(square => square.row === rowIndex && square.col === colIndex);
+              const isAppearing = appearingSquares.some(square => square.row === rowIndex && square.col === colIndex);
+              const isSwapping = swappingSquares.some(square => square.row === rowIndex && square.col === colIndex);
+              const swapStyle = isSwapping ? { '--swap-x': `${isSwapping.x * 100}%`, '--swap-y': `${isSwapping.y * 100}%` } : {};
               return (
                 <div
                   key={colIndex}
-                  className={`square ${color} ${isSelected && invalidMove ? 'cannot-move' : ''} ${isAnimating ? 'animating' : ''}`}
+                  className={`square ${color} ${isSelected && invalidMove ? 'cannot-move' : ''} ${isAnimating ? 'animating' : ''} ${isFalling ? 'falling' : ''} ${isDisappearing ? 'disappearing' : ''} ${isAppearing ? 'appearing' : ''} ${isSwapping ? 'swapping' : ''}`}
+                  style={swapStyle}
                   onClick={() => handleSquareClick(rowIndex, colIndex)}
                 />
               );
@@ -191,12 +231,12 @@ const App = () => {
           </div>
         ))}
       </div>
-      <button className="show-rules-button" onClick={() => setShowRules(true)}>Show Rules</button>
+      <button className="show-rules-button" onClick={() => setShowRules(true)}>Pokaż zasady</button>
       {showRules && (
         <div className="rules-popup">
           <div className="rules-content">
             <GameRules />
-            <button onClick={() => setShowRules(false)}>Close</button>
+            <button onClick={() => setShowRules(false)}>Zamknij</button>
           </div>
         </div>
       )}

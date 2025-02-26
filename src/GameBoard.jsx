@@ -5,17 +5,17 @@ const GameBoard = () => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const handleMatch = (matchedSquares) => {
-    // ...existing code to remove matched squares...
+    // ...istniejący kod do usuwania dopasowanych kwadratów...
     setIsAnimating(true);
     setTimeout(() => {
-      // ...existing code to let new squares fall into place...
+      // ...istniejący kod do wstawiania nowych kwadratów...
       setIsAnimating(false);
-    }, 500); // 500ms delay
+    }, 500); // 500ms opóźnienie
   };
 
   return (
     <div className={`game-board ${isAnimating ? 'animating' : ''}`}>
-      {/* ...existing code to render the board... */}
+      {/* ...istniejący kod do renderowania planszy... */}
     </div>
   );
 };

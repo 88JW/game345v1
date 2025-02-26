@@ -18,6 +18,65 @@
   visibility: hidden;
 }
 
+.square.falling {
+  animation: fall 0.3s ease-in-out;
+}
+
+.square.disappearing {
+  animation: disappear 0.2s ease-in-out forwards;
+}
+
+.square.appearing {
+  animation: appear 0.2s ease-in-out forwards; /* Changed duration to 0.3s */
+}
+
+.square.swapping {
+  animation: swap 0.2s ease-in-out;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes disappear {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes swap {
+  0% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(var(--swap-x, 0), var(--swap-y, 0));
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
 .board {
   display: grid;
   grid-template-rows: repeat(8, 12vw);

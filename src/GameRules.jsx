@@ -1,13 +1,13 @@
 const GameRules = () => {
   return (
     <div>
-      <h2>Game Rules</h2>
-      <p>Match 3 or more squares of the same color to remove them from the board.</p>
-      <p>Click or touch a square to select it, then click or touch an adjacent square to swap them.</p>
-      <p>If the swap results in a match, the squares will be removed and new squares will fall into place.</p>
-      <p>If the swap does not result in a match, the squares will revert to their original positions.</p>
-      <h3>Scoring</h3>
-      <p>You earn 100 points for each square removed from the board.</p>
+      <h2>Zasady gry</h2>
+      <p>Połącz 3 lub więcej kwadratów tego samego koloru, aby usunąć je z planszy.</p>
+      <p>Kliknij lub dotknij kwadrat, aby go wybrać, a następnie kliknij lub dotknij sąsiedni kwadrat, aby je zamienić.</p>
+      <p>Jeśli zamiana spowoduje dopasowanie, kwadraty zostaną usunięte, a nowe kwadraty spadną na ich miejsce.</p>
+      <p>Jeśli zamiana nie spowoduje dopasowania, kwadraty wrócą na swoje pierwotne miejsca.</p>
+      <h3>Punktacja</h3>
+      <p>Otrzymujesz 100 punktów za każdy kwadrat usunięty z planszy.</p>
     </div>
   );
 };
