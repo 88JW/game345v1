@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import GameRules from './GameRules';
-import sounds from './soundConfig'; 
-import rulesImage from './assets/rules.png'; // Add this line
-import logoImage from './assets/logo.png'; // Add this line
-import scoreImage from './assets/score.png'; // Add this line
+import sounds from './soundConfig';
+import rulesImage from './assets/rules.png';
+import logoImage from './assets/logo.png';
+import scoreImage from './assets/score.png';
+import rulesSound from './assets/rules_sound_1.wav';
+import matchSound from './assets/blik_sound_1.wav'; // Add this line
+import bigMatchSound from './assets/blik_sound_2.wav'; // Add this line
 
 const BOARD_SIZE = 8;
-const COLORS = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink']; // Add 'pink'
+const COLORS = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink'];
 
 const App = () => {
   const [board, setBoard] = useState([]);
@@ -28,7 +31,6 @@ const App = () => {
     initializeBoard();
   }, []);
 
-  // Inicjalizuje planszę z losowymi kolorami
   const initializeBoard = () => {
     const newBoard = Array.from({ length: BOARD_SIZE }, () =>
       Array.from({ length: BOARD_SIZE }, () => COLORS[Math.floor(Math.random() * COLORS.length)])
@@ -36,9 +38,8 @@ const App = () => {
     setBoard(newBoard);
   };
 
-  // Obsługuje kliknięcie na kwadrat
   const handleSquareClick = (row, col) => {
-    if (isAnimating) return; // Zablokuj przesuwanie podczas animacji
+    if (isAnimating) return;
     if (selectedSquare) {
       const [selectedRow, selectedCol] = selectedSquare;
       if (Math.abs(selectedRow - row) + Math.abs(selectedCol - col) === 1) {
@@ -57,7 +58,6 @@ const App = () => {
             setInvalidMove(false);
             resolveMatches(newBoard);
           } else {
-            // Cofnij zamianę, jeśli nie znaleziono dopasowań
             [newBoard[selectedRow][selectedCol], newBoard[row][col]] = [newBoard[row][col], newBoard[selectedRow][selectedCol]];
             setBoard(newBoard);
             setSelectedSquare(null);
@@ -65,7 +65,7 @@ const App = () => {
           }
           setSwappingSquares([]);
           setIsAnimating(false);
-        }, 300); // 300ms opóźnienie dla animacji zamiany
+        }, 300);
       } else {
         setSelectedSquare([row, col]);
         setInvalidMove(false);
@@ -76,7 +76,6 @@ const App = () => {
     }
   };
 
-  // Sprawdza, czy na planszy są dopasowania
   const hasMatches = (board) => {
     for (let row = 0; row < BOARD_SIZE; row++) {
       for (let col = 0; col < BOARD_SIZE; col++) {
@@ -92,7 +91,6 @@ const App = () => {
     return false;
   };
 
-  // Znajduje i oznacza dopasowania na planszy
   const resolveMatches = (board) => {
     const newMatches = [];
     const matchMap = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(false));
@@ -124,15 +122,16 @@ const App = () => {
     if (newMatches.length > 0) {
       setMatches(newMatches);
       setDisappearingSquares(newMatches);
-      sounds.disappear.play(); // Play sound when squares disappear
+      const soundToPlay = newMatches.length > 3 ? bigMatchSound : matchSound;
+      const audio = new Audio(soundToPlay);
+      audio.play();
       setTimeout(() => {
         removeMatches(newMatches);
         setDisappearingSquares([]);
-      }, 500); // 500ms opóźnienie
+      }, 500);
     }
   };
 
-  // Usuwa dopasowania z planszy
   const removeMatches = (matches) => {
     const newBoard = [...board];
     let points = 0;
@@ -147,10 +146,9 @@ const App = () => {
     setTimeout(() => {
       dropSquares(newBoard);
       setAnimatingSquares([]);
-    }, 500); // 500ms opóźnienie
+    }, 500);
   };
 
-  // Przesuwa kwadraty w dół, aby wypełnić puste miejsca
   const dropSquares = (board) => {
     const newBoard = [...board];
     const newFallingSquares = [];
@@ -173,10 +171,9 @@ const App = () => {
     setTimeout(() => {
       setFallingSquares([]);
       generateNewSquares(newBoard);
-    }, 500); // 500ms opóźnienie
+    }, 500);
   };
 
-  // Generuje nowe kwadraty w pustych miejscach
   const generateNewSquares = (board) => {
     const newBoard = [...board];
     const newAppearingSquares = [];
@@ -193,24 +190,27 @@ const App = () => {
     setIsAnimating(true);
     setTimeout(() => {
       setAppearingSquares([]);
-      resolveMatches(newBoard); // To zapewni, że nowe dopasowania zostaną rozwiązane i punkty zostaną dodane
+      resolveMatches(newBoard);
       setIsAnimating(false);
-    }, 500); // 500ms opóźnienie
+    }, 500);
   };
 
-  // Sprawdza, czy gra się skończyła
   const checkGameOver = () => {
-    // Implementuj logikę sprawdzania, czy nie ma już żadnych prawidłowych ruchów
-    // Jeśli brak prawidłowych ruchów, setGameOver(true);
+    // Implement game over logic
   };
 
   useEffect(() => {
     checkGameOver();
   }, [board]);
 
+  const playRulesSound = () => {
+    const audio = new Audio(rulesSound);
+    audio.play();
+  };
+
   return (
     <div className={`App ${isAnimating ? 'animating' : ''}`}>
-      <img src={logoImage} alt="Game 3-4-5" className="game-logo" /> {/* Replace this line */}
+      <img src={logoImage} alt="Game 3-4-5" className="game-logo" />
       <div className="score-container">
         <img src={scoreImage} alt="Score" className="score-background" />
         <div className="score">{score}</div>
@@ -243,7 +243,10 @@ const App = () => {
         src={rulesImage}
         alt="Pokaż zasady"
         className="show-rules-button"
-        onClick={() => setShowRules(true)}
+        onClick={() => {
+          playRulesSound();
+          setShowRules(true);
+        }}
       />
       {showRules && (
         <div className="rules-popup">
