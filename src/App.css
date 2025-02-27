@@ -2,7 +2,8 @@
   max-width: 1280px;
   margin: 0 auto; 
   text-align: center;
-  background-color: black;
+  background-image: url('./assets/bg.png');
+  background-size: cover;
 }
 
 .App {
@@ -91,6 +92,7 @@
   width: 100vw;
   height: 100vw;
   box-sizing: border-box;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .row {
