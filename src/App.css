@@ -133,6 +133,16 @@
   background-size: cover;
 }
 
+.square.orange {
+  background-image: url('./assets/6.png'); /* Add this line */
+  background-size: cover;
+}
+
+.square.pink {
+  background-image: url('./assets/7.png'); /* Add this line */
+  background-size: cover;
+}
+
 .score-container {
   position: relative;
   display: inline-block;

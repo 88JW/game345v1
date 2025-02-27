@@ -7,7 +7,7 @@ import logoImage from './assets/logo.png'; // Add this line
 import scoreImage from './assets/score.png'; // Add this line
 
 const BOARD_SIZE = 8;
-const COLORS = ['red', 'blue', 'green', 'yellow', 'purple'];
+const COLORS = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink']; // Add 'pink'
 
 const App = () => {
   const [board, setBoard] = useState([]);
