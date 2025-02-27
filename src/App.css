@@ -14,6 +14,12 @@
   overflow: hidden;
 }
 
+.game-logo {
+  width: 300px; /* Adjusted size */
+  height: auto;
+
+}
+
 .square.animating {
   visibility: hidden;
 }
@@ -125,6 +131,25 @@
   background-size: cover;
 }
 
+.score-container {
+  position: relative;
+  display: inline-block;
+}
+
+.score-background {
+  width: 150px; /* Adjust size as needed */
+  height: auto;
+}
+
+.score {
+  position: absolute;
+  top: 45%;
+  left: 65%; /* Adjusted from 50% to 65% */
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  color: white;
+}
+
 .score {
   font-size: 1.5rem;
   color: white;
@@ -176,6 +201,9 @@
 
 .show-rules-button {
   margin-top: 2rem;
+  width: 200px; /* Add this line */
+  height: 50px; /* Add this line */
+  cursor: pointer; /* Add this line */
 }
 
 @media (min-width: 1280px) {

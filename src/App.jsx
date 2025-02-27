@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import GameRules from './GameRules';
-import sounds from './soundConfig';
+import sounds from './soundConfig'; 
+import rulesImage from './assets/rules.png'; // Add this line
+import logoImage from './assets/logo.png'; // Add this line
+import scoreImage from './assets/score.png'; // Add this line
 
 const BOARD_SIZE = 8;
 const COLORS = ['red', 'blue', 'green', 'yellow', 'purple'];
@@ -207,8 +210,11 @@ const App = () => {
 
   return (
     <div className={`App ${isAnimating ? 'animating' : ''}`}>
-      <h1>Game 3-4-5</h1>
-      <div className="score">Wynik: {score}</div>
+      <img src={logoImage} alt="Game 3-4-5" className="game-logo" /> {/* Replace this line */}
+      <div className="score-container">
+        <img src={scoreImage} alt="Score" className="score-background" />
+        <div className="score">{score}</div>
+      </div>
       {gameOver && <div className="game-over">Koniec gry!</div>}
       <div className="board">
         {board.map((row, rowIndex) => (
@@ -233,7 +239,12 @@ const App = () => {
           </div>
         ))}
       </div>
-      <button className="show-rules-button" onClick={() => setShowRules(true)}>Pokaż zasady</button>
+      <img
+        src={rulesImage}
+        alt="Pokaż zasady"
+        className="show-rules-button"
+        onClick={() => setShowRules(true)}
+      />
       {showRules && (
         <div className="rules-popup">
           <div className="rules-content">
