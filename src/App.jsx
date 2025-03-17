@@ -2,12 +2,9 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import GameRules from './GameRules';
 import sounds from './soundConfig';
-import rulesImage from './assets/rules.png';
-import logoImage from './assets/logo.png';
-import scoreImage from './assets/score.png';
 import rulesSound from './assets/rules_sound_1.wav';
-import matchSound from './assets/blik_sound_1.wav'; // Add this line
-import bigMatchSound from './assets/blik_sound_2.wav'; // Add this line
+import matchSound from './assets/blik_sound_1.wav';
+import bigMatchSound from './assets/blik_sound_2.wav';
 
 const BOARD_SIZE = 8;
 const COLORS = ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'pink'];
@@ -31,6 +28,7 @@ const App = () => {
     initializeBoard();
   }, []);
 
+  // Inicjalizacja początkowej planszy
   const initializeBoard = () => {
     const newBoard = Array.from({ length: BOARD_SIZE }, () =>
       Array.from({ length: BOARD_SIZE }, () => COLORS[Math.floor(Math.random() * COLORS.length)])
@@ -174,6 +172,7 @@ const App = () => {
     }, 500);
   };
 
+  // Generowanie nowych symboli po usunięciu dopasowanych elementów
   const generateNewSquares = (board) => {
     const newBoard = [...board];
     const newAppearingSquares = [];
@@ -210,10 +209,8 @@ const App = () => {
 
   return (
     <div className={`App ${isAnimating ? 'animating' : ''}`}>
-      <img src={logoImage} alt="Game 3-4-5" className="game-logo" />
       <div className="score-container">
-        <img src={scoreImage} alt="Score" className="score-background" />
-        <div className="score">{score}</div>
+        <div className="score">Wynik: {score}</div>
       </div>
       {gameOver && <div className="game-over">Koniec gry!</div>}
       <div className="board">
@@ -239,15 +236,15 @@ const App = () => {
           </div>
         ))}
       </div>
-      <img
-        src={rulesImage}
-        alt="Pokaż zasady"
+      <button
         className="show-rules-button"
         onClick={() => {
           playRulesSound();
           setShowRules(true);
         }}
-      />
+      >
+        Pokaż zasady
+      </button>
       {showRules && (
         <div className="rules-popup">
           <div className="rules-content">

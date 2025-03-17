@@ -2,8 +2,8 @@
   max-width: 1280px;
   margin: 0 auto; 
   text-align: center;
-  background-image: url('./assets/bg.png');
-  background-size: cover;
+  background-color: #242424; /* Replaced background image with a color */
+  width: 100%;
 }
 
 .App {
@@ -11,15 +11,15 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  padding: 5px; /* Reduced padding on mobile from 10px to 5px */
+  box-sizing: border-box;
+  margin: 0 auto; /* Center the app */
+  width: 100%;
 }
 
-.game-logo {
-  width: 300px; /* Adjusted size */
-  height: auto;
-
-}
+/* Remove the game-logo class since we're not using it anymore */
 
 .square.animating {
   visibility: hidden;
@@ -84,28 +84,36 @@
   }
 }
 
+/* Główna przestrzeń gry - siatka 8x8 */
 .board {
   display: grid;
-  grid-template-rows: repeat(8, 12vw);
-  grid-template-columns: repeat(8, 12vw);
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 2px;
-  width: 100vw;
-  height: 100vw;
+  width: calc(100% - 6px); /* Reduced margin from 20px to 6px */
+  max-width: 98vmin; /* Increased from 95% to 98% */
+  height: auto;
+  aspect-ratio: 1 / 1; /* Maintain square shape */
   box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0.5);
+  margin: 0 auto; /* To centruje planszę w poziomie */
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .row {
   display: contents;
 }
 
+/* Pojedynczy element gry */
 .square {
-  width: 11.5vw;
-  height: 11.5vw;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .square.red {
@@ -146,26 +154,22 @@
 .score-container {
   position: relative;
   display: inline-block;
+  margin-bottom: 2rem;
+  margin-top: 2rem;
 }
 
-.score-background {
-  width: 150px; /* Adjust size as needed */
-  height: auto;
-}
-
-.score {
-  position: absolute;
-  top: 45%;
-  left: 65%; /* Adjusted from 50% to 65% */
-  transform: translate(-50%, -50%);
-  font-size: 1.5rem;
-  color: white;
-}
+/* Removed score-background class since we're not using the image anymore */
 
 .score {
-  font-size: 1.5rem;
+  font-size: 2rem;
   color: white;
-  margin-bottom: 5rem;
+  font-weight: bold;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  min-width: 150px;
+  position: static; /* Changed from absolute to static */
+  transform: none; /* Remove the transform */
 }
 
 .game-over {
@@ -211,23 +215,51 @@
   margin-bottom: 2rem;
 }
 
+/* Updated button style to replace the image button */
 .show-rules-button {
   margin-top: 2rem;
-  width: 200px; /* Add this line */
-  height: 50px; /* Add this line */
-  cursor: pointer; /* Add this line */
+  width: 200px;
+  height: 50px;
+  cursor: pointer;
+  background-color: #4a4a4a;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: bold;
 }
 
-@media (min-width: 1280px) {
+.show-rules-button:hover {
+  background-color: #5a5a5a;
+}
+
+/* Na desktopie używane są stałe wymiary */
+@media (min-width: 768px) {
   .board {
     grid-template-rows: repeat(8, 50px);
     grid-template-columns: repeat(8, 50px);
-    width: auto;
-    height: auto;
+    width: 416px; /* Stały rozmiar na desktopie */
+    height: 416px;
+    max-width: 500px;
   }
 
   .square {
-    width: 50px;
+    width: 50px; /* Stały rozmiar elementu na desktopie */
     height: 50px;
+  }
+  
+  .App {
+    justify-content: flex-start;
+    padding-top: 50px;
+    max-width: 600px; /* Limit app width on larger screens */
+    padding: 20px; /* Restore padding on desktop */
+  }
+  
+  .score {
+    font-size: 2.5rem;
+  }
+  
+  .show-rules-button {
+    margin-top: 2rem;
   }
 }
