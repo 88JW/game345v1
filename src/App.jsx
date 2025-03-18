@@ -23,6 +23,16 @@ const App = () => {
   const [disappearingSquares, setDisappearingSquares] = useState([]);
   const [appearingSquares, setAppearingSquares] = useState([]);
   const [swappingSquares, setSwappingSquares] = useState([]);
+  const [isMuted, setIsMuted] = useState(() => {
+    // Pobierz zapisany stan wyciszenia z localStorage lub ustaw domyślnie na false
+    const savedMute = localStorage.getItem('isMuted');
+    return savedMute ? JSON.parse(savedMute) : false;
+  });
+
+  // Zapisz stan wyciszenia w localStorage przy każdej zmianie
+  useEffect(() => {
+    localStorage.setItem('isMuted', JSON.stringify(isMuted));
+  }, [isMuted]);
 
   useEffect(() => {
     initializeBoard();
@@ -121,8 +131,7 @@ const App = () => {
       setMatches(newMatches);
       setDisappearingSquares(newMatches);
       const soundToPlay = newMatches.length > 3 ? bigMatchSound : matchSound;
-      const audio = new Audio(soundToPlay);
-      audio.play();
+      playSound(soundToPlay);
       setTimeout(() => {
         removeMatches(newMatches);
         setDisappearingSquares([]);
@@ -202,9 +211,19 @@ const App = () => {
     checkGameOver();
   }, [board]);
 
+  const playSound = (soundSrc) => {
+    if (!isMuted) {
+      const audio = new Audio(soundSrc);
+      audio.play().catch(err => console.log("Błąd odtwarzania dźwięku:", err));
+    }
+  };
+
   const playRulesSound = () => {
-    const audio = new Audio(rulesSound);
-    audio.play();
+    playSound(rulesSound);
+  };
+
+  const toggleMute = () => {
+    setIsMuted(prevMuted => !prevMuted);
   };
 
   return (
@@ -236,15 +255,27 @@ const App = () => {
           </div>
         ))}
       </div>
-      <button
-        className="show-rules-button"
-        onClick={() => {
-          playRulesSound();
-          setShowRules(true);
-        }}
-      >
-        Pokaż zasady
-      </button>
+      
+      {/* Replace single button with button container */}
+      <div className="buttons-container">
+        <button
+          className={`show-rules-button`}
+          onClick={() => {
+            playRulesSound();
+            setShowRules(true);
+          }}
+        >
+          Pokaż zasady
+        </button>
+        <button 
+          className={`round-button ${isMuted ? 'muted' : ''}`}
+          onClick={toggleMute}
+          aria-label={isMuted ? "Włącz dźwięk" : "Wycisz dźwięk"}
+        >
+          {isMuted ? '🔇' : '🔊'}
+        </button>
+      </div>
+      
       {showRules && (
         <div className="rules-popup">
           <div className="rules-content">

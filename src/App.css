@@ -215,9 +215,17 @@
   margin-bottom: 2rem;
 }
 
+/* Button container for alignment */
+.buttons-container {
+  display: flex;
+  gap: 15px;
+  align-items: center; /* Align items vertically */
+  margin-top: 2rem;
+  justify-content: center;
+}
+
 /* Updated button style to replace the image button */
 .show-rules-button {
-  margin-top: 2rem;
   width: 200px;
   height: 50px;
   cursor: pointer;
@@ -227,10 +235,51 @@
   border-radius: 8px;
   font-size: 1rem;
   font-weight: bold;
+  margin: 0; /* Remove all margins */
+  display: flex; /* Make it flex like the round buttons */
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  box-sizing: border-box;
+  line-height: 1;
 }
 
 .show-rules-button:hover {
   background-color: #5a5a5a;
+}
+
+/* Style for the round buttons */
+.round-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #4a4a4a;
+  color: white;
+  border: none;
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  padding: 0;
+  margin: 0; /* Ensure no margins */
+  box-sizing: border-box;
+  line-height: 1;
+  transition: background-color 0.3s ease;
+}
+
+.round-button:hover {
+  background-color: #5a5a5a;
+  transform: scale(1.05);
+}
+
+/* Style for muted state */
+.round-button.muted {
+  background-color: #333333;
+}
+
+.round-button.muted:hover {
+  background-color: #3a3a3a;
 }
 
 /* Na desktopie używane są stałe wymiary */
@@ -257,9 +306,5 @@
   
   .score {
     font-size: 2.5rem;
-  }
-  
-  .show-rules-button {
-    margin-top: 2rem;
   }
 }
